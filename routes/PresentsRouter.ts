@@ -15,6 +15,6 @@ export class PresentsRouter {
     }
 
     private getPresentsList = (req:Request,res:Response)=> {
-        res.send('<h1>Presents</h1>')
+        res.json('<h1>Presents</h1>')
     }
 }
