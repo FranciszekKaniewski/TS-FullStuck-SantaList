@@ -4,7 +4,7 @@ import {v4 as uuid} from 'uuid'
 import {FieldPacket} from "mysql2";
 
 
-type PresentResult = [Kid[],FieldPacket[]]
+type KidResult = [Kid[],FieldPacket[]]
 
 export class KidRecord implements Kid{
     id: string;
@@ -21,9 +21,24 @@ export class KidRecord implements Kid{
 
     };
 
-    public static async getAll():Promise<Kid[]>{
-        const [results] = (await pool.execute("SELECT * FROM `presents`") as PresentResult);
+    static async getAll():Promise<Kid[]>{
+        const [results] = (await pool.execute("SELECT * FROM `kids`") as KidResult);
 
-        return results;
+        return results.map(obj=>new KidRecord(obj));
     };
+
+    static async getOne(id:string):Promise<KidRecord|null>{
+        const [results] = await pool.execute("SELECT * FROM `kids` WHERE `id` = :id",{
+            id,
+        }) as KidResult
+
+        return results.length > 0 ? new KidRecord(results[0]) : null
+    }
+
+    async updateToy():Promise<void>{
+        await pool.execute("UPDATE `kids` SET `toy`= :toy WHERE `id` = :id",{
+            id: this.id,
+            toy:this.toy,
+        });
+    }
 }

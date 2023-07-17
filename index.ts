@@ -5,6 +5,8 @@ import {Application} from "express";
 import {KidsRouter} from "./routes/KidsRouter";
 import {PresentsRouter} from "./routes/PresentsRouter";
 
+import {handleError} from "./utils/error";
+
 
 export class App {
     private app: Application;
@@ -20,6 +22,7 @@ export class App {
         this.app = express();
 
         this.app.use(express.json());
+
     }
 
     setRoutes(){
@@ -28,6 +31,7 @@ export class App {
     }
 
     run(){
+        this.app.use(handleError);
         this.app.listen(3001,'localhost', ()=>{
             console.log('Listening on http://localhost:3001/');
         })
