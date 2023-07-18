@@ -18,15 +18,14 @@ export class PresentRecord implements Present{
         this.value = obj.value;
     };
 
-    public Validation (){
+    public async Validation (){
         if(this.name.length < 2 || this.name.length > 20){
             throw new ValidationError("Present name have to be between 2 and 20 characters!")
         }
-        (async()=>{
-            if((await PresentRecord.getAll()).filter(e=>e.name === this.name).length){
-                throw new ValidationError("Name must be unique!")
-            }
-        })()
+
+        if((await PresentRecord.getAll()).filter(e=>e.name === this.name && e.id !== this.id).length){
+            throw new ValidationError("Name must be unique!")
+        }
     };
 
     static async getAll():Promise<Present[]>{
@@ -44,7 +43,7 @@ export class PresentRecord implements Present{
     }
 
     async update():Promise<void>{
-        this.Validation();
+        await this.Validation();
         console.log(`${this.name}(${this.id}) has been updated!`)
         await pool.execute("UPDATE `presents` SET `name`= :name,`value`= :value WHERE id = :id",{
             id: this.id,
@@ -54,7 +53,7 @@ export class PresentRecord implements Present{
     }
 
     async add(){
-        this.Validation()
+        await this.Validation()
         console.log(`${this.name}(${this.id}) has been added!`)
         await pool.execute("INSERT INTO `presents`(`name`, `value`) VALUES (:name,:value)",{
             name:this.name,

@@ -1,5 +1,7 @@
 import { Request, Response, Router} from "express";
 import {App} from "../index";
+import {PresentRecord} from "../database/records/present.record";
+import {ValidationError} from "../utils/error";
 
 export class PresentsRouter {
     public readonly router:Router = Router();
@@ -12,9 +14,40 @@ export class PresentsRouter {
 
     private setUpRoutes(){
         this.router.get('/', this.getPresentsList)
+        this.router.post('/', this.addPresent)
+        this.router.put('/', this.updatePresent)
+        this.router.delete('/', this.deletePresent)
     }
 
-    private getPresentsList = (req:Request,res:Response)=> {
-        res.json('<h1>Presents</h1>')
+    private getPresentsList = async (req:Request,res:Response)=> {
+        const presentsList = await PresentRecord.getAll();
+        res.json(presentsList);
+    }
+    private addPresent = async (req:Request,res:Response)=>{
+        const newPresent = new PresentRecord(req.body);
+
+        await newPresent.add();
+        res.end();
+    }
+    private updatePresent = async (req:Request,res:Response)=>{
+        const presentToUpdateId = req.body.id
+        const presentToUpdate = await PresentRecord.getOne(presentToUpdateId);
+
+        if(!presentToUpdate) throw new ValidationError(`Nie znaleziono dziecka o id: ${presentToUpdateId}`)
+
+        presentToUpdate.name = req.body.name;
+        presentToUpdate.value = req.body.value;
+
+        await presentToUpdate.update()
+        res.end();
+    }
+    private deletePresent = async (req:Request,res:Response)=>{
+        const presentToDeleteId = req.body.id
+        const presentToDelete = await PresentRecord.getOne(presentToDeleteId);
+
+        if(!presentToDeleteId) throw new ValidationError(`Nie znaleziono dziecka o id: ${presentToDeleteId}`)
+
+        await presentToDelete.delete();
+        res.end();
     }
 }
