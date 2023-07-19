@@ -1,10 +1,14 @@
 import React from 'react';
+
+import {MainBoard} from "./components/MainBoard";
+
 import './style/main.css'
 
 function App() {
   return (
     <div className="App">
       <h1>Santa List Manager</h1>
+      <MainBoard/>
     </div>
   );
 }
