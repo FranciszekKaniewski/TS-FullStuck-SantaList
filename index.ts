@@ -1,6 +1,7 @@
 import * as express from 'express'
 import 'express-async-errors';
 import {Application} from "express";
+import * as cors from 'cors'
 
 import {KidsRouter} from "./routes/KidsRouter";
 import {PresentsRouter} from "./routes/PresentsRouter";
@@ -20,6 +21,7 @@ export class App {
 
     private configApp():void{
         this.app = express();
+        this.app.use(cors({origin:"http://localhost:3000"}))
 
         this.app.use(express.json());
 

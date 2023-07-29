@@ -1,7 +1,8 @@
 import {Link, Route, Routes } from "react-router-dom";
-import {ChildrenView} from '../views/ChildrenView'
-import {PresentsView} from '../views/PresentsView'
-import {AddPresentView} from "../views/AddPresentView";
+import {ChildrenView} from '../../views/ChildrenView'
+import {PresentsView} from '../../views/PresentsView'
+import {AddPresentView} from "../../views/AddPresentView";
+
 
 export const MainBoard = () => {
 

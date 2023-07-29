@@ -26,8 +26,13 @@ export class PresentRecord implements Present{
         if((await PresentRecord.getAll()).filter(e=>e.name === this.name && e.id !== this.id).length){
             throw new ValidationError("Name must be unique!")
         }
+
+        if(this.value < 0){
+            throw new ValidationError(`You have not more ${this.name} present in your magazine!`)
+        }
     };
 
+    // Functions
     static async getAll():Promise<Present[]>{
         const [results] = (await pool.execute("SELECT * FROM `presents`") as PresentResult);
 
@@ -44,7 +49,7 @@ export class PresentRecord implements Present{
 
     async update():Promise<void>{
         await this.Validation();
-        console.log(`${this.name}(${this.id}) has been updated!`)
+        console.log(`${this.name} (${this.id}) has been updated!`)
         await pool.execute("UPDATE `presents` SET `name`= :name,`value`= :value WHERE id = :id",{
             id: this.id,
             name:this.name,
@@ -52,17 +57,17 @@ export class PresentRecord implements Present{
         });
     }
 
-    async add(){
+    async add():Promise<void>{
         await this.Validation()
-        console.log(`${this.name}(${this.id}) has been added!`)
+        console.log(`${this.name} (${this.id}) has been added!`)
         await pool.execute("INSERT INTO `presents`(`name`, `value`) VALUES (:name,:value)",{
             name:this.name,
             value:this.value,
         })
     }
 
-    async delete(){
-        console.log(`${this.name}(${this.id}) has been deleted!`)
+    async delete():Promise<void>{
+        console.log(`${this.name} (${this.id}) has been deleted!`)
         await pool.execute("DELETE FROM `presents` WHERE `id` = :id",{
             id:this.id,
         })

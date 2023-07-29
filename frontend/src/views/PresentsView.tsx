@@ -1,3 +1,5 @@
+import {PresentsList} from "../components/PresentsList/PresentsList";
+
 export const PresentsView = () =>(
-    <h2>PresentsView</h2>
+    <PresentsList/>
 )

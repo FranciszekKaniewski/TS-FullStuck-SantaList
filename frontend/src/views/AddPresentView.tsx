@@ -1,3 +1,5 @@
+import {AddPresentForm} from "../components/AddPresentForm/AddPresentForm";
+
 export const AddPresentView = () =>(
-    <h2>AddPresentView</h2>
+    <AddPresentForm/>
 )

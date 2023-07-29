@@ -2,6 +2,7 @@ import { Request, Response, Router} from "express";
 import {App} from "../index";
 import {PresentRecord} from "../database/records/present.record";
 import {ValidationError} from "../utils/error";
+import {Present} from "../types";
 
 export class PresentsRouter {
     public readonly router:Router = Router();
@@ -17,8 +18,10 @@ export class PresentsRouter {
         this.router.post('/', this.addPresent)
         this.router.put('/', this.updatePresent)
         this.router.delete('/', this.deletePresent)
+        this.router.put('/many',this.updateMany)
     }
 
+    //Routes
     private getPresentsList = async (req:Request,res:Response)=> {
         const presentsList = await PresentRecord.getAll();
         res.json(presentsList);
@@ -48,6 +51,22 @@ export class PresentsRouter {
         if(!presentToDeleteId) throw new ValidationError(`Nie znaleziono dziecka o id: ${presentToDeleteId}`)
 
         await presentToDelete.delete();
+        res.end();
+    }
+    private updateMany = async (req:Request,res:Response)=>{
+        const allPresentsToUpdate:Present[] = req.body
+
+        console.log(`-------------- Update Many Presents --------------`)
+        allPresentsToUpdate.map(async present=>{
+            const presentToUpdate = await PresentRecord.getOne(present.id);
+
+            if(presentToUpdate.name !== present.name || presentToUpdate.value !== present.value){
+                presentToUpdate.name = present.name
+                presentToUpdate.value = present.value
+
+                await presentToUpdate.update()
+            }
+        })
         res.end();
     }
 }

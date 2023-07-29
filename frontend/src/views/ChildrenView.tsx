@@ -1,3 +1,5 @@
+import {KidsList} from "../components/KidsList/KidsList";
+
 export const ChildrenView = () =>(
-    <h2>children</h2>
+    <KidsList/>
 )
