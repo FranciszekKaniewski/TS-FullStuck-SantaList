@@ -3,11 +3,12 @@ import {Kid, Present} from 'types'
 interface Props {
     kid:Kid;
     allToys:Present[]|[];
+    isChanged:boolean;
     changePresentList:(newPresentsArray:Present[])=>{};
     changeKidsList:(changedKid:Kid)=>{};
 }
 
-export const SingleKid = ({kid,allToys,changePresentList,changeKidsList}:Props) =>{
+export const SingleKid = ({kid,allToys,isChanged, changePresentList,changeKidsList}:Props) =>{
 
     //Functions
     const changeHandler = async (e:any) =>{
@@ -41,11 +42,11 @@ export const SingleKid = ({kid,allToys,changePresentList,changeKidsList}:Props) 
             }
         </select>
 
+    const style = isChanged ? {backgroundColor: '#f5f5ae'}: {backgroundColor: '#ffffff'}
+
     return(
     <>
-    <p><b>({kid.id})</b> {kid.name} | {select}</p>
+    <p style={style}><b>({kid.id})</b> {kid.name} | {select}</p>
     </>
     );
 }
-
-//@TODO uninstal Sellect
