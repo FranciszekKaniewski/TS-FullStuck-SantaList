@@ -1,5 +1,5 @@
 import './pop-up.css'
-import {PopUpProps} from "../../utils/frontent-types/types";
+import {PopUpProps} from "../../../utils/frontent-types/types";
 import {useEffect, useRef} from "react";
 
 export const PopUp = ({title,description="",color,turnOffFn}:PopUpProps) => {

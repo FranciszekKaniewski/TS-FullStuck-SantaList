@@ -3,7 +3,7 @@ import {Kid, Present} from "types";
 import {Color, PopUpDeps} from "../../utils/frontent-types/types";
 import {SingleKid} from "../SingleKid/SingleKid";
 import {Fetch} from "../../utils/Fetch";
-import {PopUp} from "../PopUp/PopUp";
+import {PopUp} from "../common/PopUp/PopUp";
 
 export const KidsList = () =>{
 
@@ -11,10 +11,9 @@ export const KidsList = () =>{
     const [kidsList, setKidsList] = useState<null | Kid[]>(null);
     const [presentsList, setPresentsList] = useState<null | Present[]>(null);
 
+    const [changedKidsRecords,setChangedKidsRecords] = useState<Kid[]>([]);
+
     const [loading,setLoading] = useState(false)
-
-    const [changedKids,setChangedKids] = useState<Kid[]>([])
-
     const [popUp,setPopUp] = useState<null|PopUpDeps>(null);
 
     //Download Data
@@ -28,7 +27,6 @@ export const KidsList = () =>{
 
         })()
     },[])
-
     useEffect(()=>{
         (async()=>{
 
@@ -46,36 +44,55 @@ export const KidsList = () =>{
     }
 
     //Functions
-    const changePresentList:any = (newPresentsArray:Present[]) => {
+    const changePresentsValues:any = (editedPresent:Present,prevPresetId:string) => {
+
+        const newPresentsArray = presentsList.map(present =>{
+            if(present.id === prevPresetId){
+                const prevPresent = presentsList.filter(present => present.id === prevPresetId)[0]
+                return ({...prevPresent,value:prevPresent.value + 1})
+            }
+            if(present.id === editedPresent.id){
+                return {...editedPresent,value:editedPresent.value - 1}
+            }else{
+                return present
+            }
+        })
+
         setPresentsList(newPresentsArray);
     }
-    const changeKidsList:any = (changedKid:Kid) => {
 
-        const newArray = kidsList.map(kid=>{
-            if(changedKid.id === kid.id){
-                setChangedKids([...changedKids, kid])
-                return changedKid;
+    const changeKidsList = (editedKid:Kid,isChanged:boolean) =>{
+
+        if(isChanged){
+            !changedKidsRecords.filter(kid=>kid.id===editedKid.id).length && setChangedKidsRecords(prevState => [...prevState,editedKid])
+        }else{
+            const arrayWithoutKid = changedKidsRecords.filter(kid=>kid.id!==editedKid.id)
+            setChangedKidsRecords(arrayWithoutKid);
+        }
+
+        const newKidsArray = kidsList.map(kid=>{
+            if(kid.id === editedKid.id){
+                return editedKid
             }else{
                 return kid
             }
-        })
-        setKidsList(newArray);
+        });
+        setKidsList(newKidsArray)
     }
 
     const saveHandler = async ()=>{
-        if(changedKids.length){
+        if(changedKidsRecords.length){
             setLoading(true)
-            const eo = await Fetch('http://localhost:3001/presents/many',"PUT",presentsList);
+            await Fetch('http://localhost:3001/presents/many',"PUT",presentsList);
             await Fetch('http://localhost:3001/kids/many',"PUT", kidsList);
 
             setLoading(false)
-            setPopUp({title:'Data saved',description:`${changedKids.length} record(s) has been updated!`, color:Color.green})
+            setPopUp({title:'Data saved',description:`${changedKidsRecords.length} record(s) has been updated!`, color:Color.green})
         }else{
             setPopUp({title:'Everythink is updated 🥳!'})
         }
 
-        setChangedKids([])
-
+        setChangedKidsRecords([]);
     }
 
     //Render
@@ -84,9 +101,9 @@ export const KidsList = () =>{
             <SingleKid
                 key={kid.id}
                 kid={kid}
-                allToys={presentsList} isChanged={changedKids.filter(changedKid => changedKid.id === kid.id).length ? true : false}
-                changePresentList={changePresentList}
+                allToys={presentsList}
                 changeKidsList={changeKidsList}
+                changePresentsValues={changePresentsValues}
             />)
 
     return (

@@ -1,32 +1,32 @@
 import {Kid, Present} from 'types'
+import {useRef, useState} from "react";
 
 interface Props {
     kid:Kid;
     allToys:Present[]|[];
-    isChanged:boolean;
-    changePresentList:(newPresentsArray:Present[])=>{};
-    changeKidsList:(changedKid:Kid)=>{};
+    changeKidsList:(editedKid:Kid,isChanged:boolean)=>void;
+    changePresentsValues:(editedPresent:Present,prevPresentId:string|undefined)=>{};
 }
 
-export const SingleKid = ({kid,allToys,isChanged, changePresentList,changeKidsList}:Props) =>{
+export const SingleKid = ({kid,allToys, changePresentsValues,changeKidsList}:Props) =>{
+
+    //Data
+    const [isChanged,setIsChanged] = useState(false)
+    const [currPresent,setCurrPresent] = useState<Present>(allToys.filter(toy=>toy.id===kid.toyId)[0])
+
+    const prevToyId = useRef(kid.toyId);
 
     //Functions
     const changeHandler = async (e:any) =>{
 
-        const newPresentsArray = allToys.map(toy=>{
-            if(toy.id===e.target.value){
-                return {...toy,value:toy.value - 1}
-            }else if(toy.id===kid.toyId){
-                return {...toy,value:toy.value + 1}
-            }else{
-                return toy
-            }
-        })
+        setCurrPresent(allToys.filter(toy=>toy.id===e.target.value)[0])
 
-        changePresentList(newPresentsArray)
-        changeKidsList({...kid,toyId:e.target.value});
+        setIsChanged(prevToyId.current !== e.target.value);
+
+
+        changePresentsValues(allToys.filter(toy=>toy.id === e.target.value)[0],currPresent.id);
+        changeKidsList({...kid,toyId:e.target.value}, prevToyId.current !== e.target.value);
     }
-
 
     //Render
     const toy = allToys.filter(e => e.id === kid.toyId)[0]
