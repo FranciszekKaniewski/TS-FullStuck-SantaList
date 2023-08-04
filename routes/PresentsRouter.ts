@@ -27,6 +27,7 @@ export class PresentsRouter {
         res.json(presentsList);
     }
     private addPresent = async (req:Request,res:Response)=>{
+        console.log(req.body)
         const newPresent = new PresentRecord(req.body);
 
         await newPresent.add();
@@ -57,16 +58,33 @@ export class PresentsRouter {
         const allPresentsToUpdate:Present[] = req.body
 
         console.log(`-------------- Update Many Presents --------------`)
-        allPresentsToUpdate.map(async present=>{
+        const presentsRecordsToUpdate = allPresentsToUpdate.map(async present=>{
+
             const presentToUpdate = await PresentRecord.getOne(present.id);
 
             if(presentToUpdate.name !== present.name || presentToUpdate.value !== present.value){
                 presentToUpdate.name = present.name
                 presentToUpdate.value = present.value
 
-                await presentToUpdate.update()
+                return presentToUpdate
             }
+            return null
         })
+
+        try{
+            for(const present of presentsRecordsToUpdate){
+                (await present) !== null && await (await present).Validation();
+            }
+        }catch (err){
+            throw new ValidationError(err);
+        }
+
+        for (const present of presentsRecordsToUpdate) {
+            if(await present) {
+                await (await present).update()
+            }
+        }
+
         res.end();
     }
 }

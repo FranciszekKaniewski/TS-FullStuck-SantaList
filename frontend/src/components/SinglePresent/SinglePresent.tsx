@@ -5,10 +5,11 @@ interface Props {
     id:string
     name:string;
     value:number;
+    deleteHandler:(present:Present)=>{}
     changePresentsList:(editedPresent:Present,isChanged:boolean)=>void;
 }
 
-export const SinglePresent = ({id,name,value,changePresentsList}:Props) =>{
+export const SinglePresent = ({id,name,value,deleteHandler, changePresentsList}:Props) =>{
     //State
     const [nameInput,setNameInput] = useState(name)
     const [valueInput,setValueInput] = useState(value)
@@ -16,10 +17,9 @@ export const SinglePresent = ({id,name,value,changePresentsList}:Props) =>{
     const refName = useRef<string>(name)
     const refNumber = useRef<number>(value)
 
-    const [isChanged,setIsChanged] = useState(false);
+    const [isChanged,setIsChanged] = useState<boolean>(false);
 
     //Functions
-
     const changedHandler = (name:string,value:number) =>{
         setIsChanged(name !== refName.current || value !== refNumber.current)
     }
@@ -48,9 +48,10 @@ export const SinglePresent = ({id,name,value,changePresentsList}:Props) =>{
 
     return(
         <li style={style}>
-            <span>({id}) </span>
+            <span className='id'>({id}) </span>
             <input type="text" placeholder={refName.current} value={nameInput} onChange={nameInputHandler}/>
             <input type="number" placeholder={String(refNumber.current)} min="0" value={valueInput} onChange={valueInputHandler}/>
+            <button onClick={()=>deleteHandler({id:id,name:name,value:value})}>X</button>
         </li>
     )
 }

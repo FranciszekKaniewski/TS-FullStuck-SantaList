@@ -108,8 +108,9 @@ export const KidsList = () =>{
 
     return (
         <>
+            <h1>Children List</h1>
             {popUp && <PopUp title={popUp.title} color={popUp.color} description={popUp.description} turnOffFn={()=>setPopUp(null)}/>}
-            <h2>{kids}</h2>
+            <ul>{kids}</ul>
             <button onClick={saveHandler}>Save</button>
         </>
     );

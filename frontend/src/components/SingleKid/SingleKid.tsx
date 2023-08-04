@@ -46,7 +46,7 @@ export const SingleKid = ({kid,allToys, changePresentsValues,changeKidsList}:Pro
 
     return(
     <>
-    <p style={style}><b>({kid.id})</b> {kid.name} | {select}</p>
+    <li style={style}><span className='id'>({kid.id})</span> <b className="name">{kid.name}</b> | {select}</li>
     </>
     );
 }

@@ -1,7 +1,7 @@
 import {pool} from "../utils/pool";
 import {Present} from "../../types";
 import {v4 as uuid} from 'uuid'
-import {FieldPacket} from "mysql2";
+import {FieldPacket, ResultSetHeader} from "mysql2";
 import {ValidationError} from "../../utils/error";
 
 
@@ -19,7 +19,7 @@ export class PresentRecord implements Present{
     };
 
     public async Validation (){
-        if(this.name.length < 2 || this.name.length > 20){
+        if(this.name.length < 2 || this.name.length > 20 ||  !this.name){
             throw new ValidationError("Present name have to be between 2 and 20 characters!")
         }
 

@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import { Present } from "types";
+import {Present} from "types";
 import {SinglePresent} from "../SinglePresent/SinglePresent";
 import {Fetch} from "../../utils/Fetch";
 import {Color, PopUpDeps} from "../../utils/frontent-types/types";
@@ -22,7 +22,7 @@ export const PresentsList = () => {
             setPresentsList(data);
             console.log(data);
         })()
-    },[])
+    },[loading])
 
     //Loading
     if(presentsList === null || loading){
@@ -34,17 +34,36 @@ export const PresentsList = () => {
 
         if(changedPresentRecords.length){
             setLoading(true);
-            await Fetch('http://localhost:3001/presents/many',"PUT",presentsList);
-            setPopUp({title:'Data saved',description:`${changedPresentRecords.length} record(s) has been updated!`, color:Color.green})
+            const res = await Fetch('http://localhost:3001/presents/many',"PUT",presentsList)
+            await setPresentsList([])
+            setLoading(false)
+
+            if(res!==null){
+                setPopUp({title: 'Error', description: `${res}`, color: Color.red})
+            }else{
+                setPopUp({title:'Data saved',description:`${changedPresentRecords.length} record(s) has been updated!`, color:Color.green})
+            }
+            setChangedPresentRecords([])
 
         }else{
-            setPopUp({title:'Everythink is updated 🥳!'})
+            !popUp && setPopUp({title:'Everythink is updated 🥳!'})
         }
-        setChangedPresentRecords([]);
+    }
+
+    const deleteHandler = async (present:Present)=>{
+        setLoading(true)
+        const res = await Fetch('http://localhost:3001/presents','DELETE', present)
         setLoading(false)
+        if(res===null){
+            setPopUp({title:"Record Deleted!", description:`record: ${present.name}`,color:Color.green})
+        }else{
+            setPopUp({title:"Error!", description:`record: ${res}`,color:Color.red})
+        }
+
     }
 
     const changePresentsList = (editedPresent:Present,isChanged:boolean) =>{
+        console.log(changedPresentRecords)
 
         if(isChanged){
             !changedPresentRecords.filter(present => present.id === editedPresent.id).length
@@ -71,6 +90,7 @@ export const PresentsList = () => {
             id={present.id as string}
             name={present.name}
             value={present.value}
+            deleteHandler={deleteHandler}
             changePresentsList={changePresentsList}
         />)
 
@@ -78,7 +98,7 @@ export const PresentsList = () => {
         <>
             {popUp && <PopUp title={popUp.title} color={popUp.color} description={popUp.description} turnOffFn={()=>setPopUp(null)}/>}
             <h1>Presents List</h1>
-            <ul>{presents}</ul>
+            <ul className='present-list'>{presents}</ul>
             <button onClick={saveHandler}>Save</button>
         </>
     )

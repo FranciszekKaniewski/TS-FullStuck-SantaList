@@ -13,21 +13,21 @@ import {KidRecord} from "./records/child.record";
     // console.log(child)
     //
     // //Update Toy
-    // child.toy = 'Autko'
+    // child.name = ''
     // await child.updateToy();
 
 
-    // // getAll presents
-    // const allPresents = await PresentRecord.getAll()
-    // console.log(allPresents);
-    //
-    // //GetOne present
-    // const onePresent = await PresentRecord.getOne(allPresents[0].id)
-    // console.log(onePresent)
+    // getAll presents
+    const allPresents = await PresentRecord.getAll()
+    console.log(allPresents);
 
-    // // Update One
-    // onePresent.name = 'Autko'
-    // await onePresent.update();
+    //GetOne present
+    const onePresent = await PresentRecord.getOne(allPresents[0].id)
+    console.log(onePresent)
+
+    // Update One
+    onePresent.name = ''
+    await onePresent.update();
 
     // // Add new one
     // const present = new PresentRecord({name:"TEST",value:10})
