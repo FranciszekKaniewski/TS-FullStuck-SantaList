@@ -3,13 +3,14 @@ import {ChildrenView} from '../../views/ChildrenView'
 import {PresentsView} from '../../views/PresentsView'
 import {AddPresentView} from "../../views/AddPresentView";
 
+import './main-board.css'
+
 
 export const MainBoard = () => {
 
     return(
         <>
-        <h2>MainBoard!</h2>
-            <ul>
+            <ul className="main-menu">
                 <li><Link to="/children">Children</Link></li>
                 <li><Link to="/presents">Presents</Link></li>
                 <li><Link to="/add-present">Add Present</Link></li>

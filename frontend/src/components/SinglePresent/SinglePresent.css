@@ -1,0 +1,13 @@
+.delete{
+    width: 20px;
+    height: 20px;
+    display: revert;
+    text-align: center;
+    margin: 0 10px;
+    padding: 0;
+    line-height: 20px;
+    background-color: #c95555;
+}
+.delete:hover{
+    background-color: #f38f8f;
+}

@@ -1,6 +1,8 @@
 import React, {useRef, useState} from "react";
 import { Present } from "types";
 
+import './SinglePresent.css'
+
 interface Props {
     id:string
     name:string;
@@ -51,7 +53,7 @@ export const SinglePresent = ({id,name,value,deleteHandler, changePresentsList}:
             <span className='id'>({id}) </span>
             <input type="text" placeholder={refName.current} value={nameInput} onChange={nameInputHandler}/>
             <input type="number" placeholder={String(refNumber.current)} min="0" value={valueInput} onChange={valueInputHandler}/>
-            <button onClick={()=>deleteHandler({id:id,name:name,value:value})}>X</button>
+            <button className="delete" onClick={()=>deleteHandler({id:id,name:name,value:value})}>X</button>
         </li>
     )
 }
